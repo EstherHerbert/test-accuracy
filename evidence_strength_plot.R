@@ -6,7 +6,14 @@ library(ggplot2)
 evidence_strength_plot <- function(sens, spec) {
   break_1 <- .75
   break_2 <- .90909
-  
+
+  plr <- round(sens/(1 - spec), 2)
+  nlr <- round((1 - sens)/spec, 2)
+
+  point <- data.frame(sens = sens,
+                      spec = spec,
+                      label = paste0("+LR = ", plr, ", -LR = ", nlr))
+
   data.frame(
     x = c(0, 0, 1, 0, break_1, 1, 0, break_2, 1, break_1, 0, 1, 1, break_2),
     y = c(1, 0, 0, 1, break_1, 0, 1, break_2, 0, break_1, 1, 1, 0, break_2),
@@ -21,13 +28,8 @@ evidence_strength_plot <- function(sens, spec) {
       )
     )
   ) -> coords
-  
-  ggplot(coords, aes(
-    x = x,
-    y = y,
-    group = id,
-    fill = id
-  )) +
+
+  ggplot() +
     scale_y_continuous(
       limits = c(0, 1),
       name = "Specificity",
@@ -40,16 +42,23 @@ evidence_strength_plot <- function(sens, spec) {
       labels = scales::percent,
       expand = c(0, 0)
     ) +
-    geom_polygon() +
+    geom_polygon(aes(
+      x = x,
+      y = y,
+      group = id,
+      fill = id
+    ), data = coords) +
     scale_fill_manual(
       guide = guide_legend(title = NULL),
       values = c("#FF0400", "#FFFF00", "#FFC000", "#68FF66")
     ) +
-    geom_point(
+    geom_point(aes(
       x = sens,
-      y = spec,
+      y = spec),
       size = 4,
+      data = point,
       show.legend = FALSE
     ) +
+    geom_label_repel(aes(x = sens, y = spec, label = label), data = point) +
     labs(title = "Classification of tests based on strongest level of evidence that they can provide")
 }
