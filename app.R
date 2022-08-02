@@ -7,7 +7,7 @@ source("./network_flow.R")
 ui <- fluidPage(
   # Application title
   titlePanel("Diagnostic Test Accuracy"),
-  
+
   flowLayout(
     sliderInput(
       "specificity",
@@ -30,9 +30,9 @@ ui <- fluidPage(
     sliderInput("preTestProbability", "Pre-test probability", 0, 100, 5, post =
                   "%")
   ),
-  
+
   hr(),
-  
+
   tabsetPanel(
     tabPanel(
       "Evidence Strength Plot",
@@ -49,8 +49,8 @@ ui <- fluidPage(
       tableOutput("statistics")
     )
   )
-  
-  
+
+
 )
 
 # Define server logic required to draw a histogram
@@ -62,16 +62,16 @@ server <- function(input, output) {
     panel.grid.minor.x = element_blank(),
     panel.grid.major.x = element_blank()
   )
-  
+
   palette <- c("#A41623", "#ADE25D")
-  
-  
+
+
   networkFlow <- reactive({
     generate_network_flow(input$preTestProbability / 100,
                           input$sensitivity / 100,
                           input$specificity / 100)
   })
-  
+
   networkPlotData <- reactive({
     flow <- networkFlow()
     data.frame(
@@ -89,13 +89,13 @@ server <- function(input, output) {
       N = c(flow$tp, flow$fn, flow$fp, flow$tn)
     )
   })
-  
-  
-  
+
+
+
   output$evidenceStrengthPlot <- renderPlot({
     evidence_strength_plot(input$sensitivity / 100, input$specificity / 100) + coord_fixed()
   })
-  
+
   output$flowPlot <- renderPlot({
     ggplot(networkPlotData(), aes(x = Prediction, y = N, fill = Accuracy)) +
       geom_col(position="dodge") +
@@ -104,7 +104,7 @@ server <- function(input, output) {
       facet_wrap(vars(Truth)) +
       scale_fill_discrete(guide = guide_legend(title=NULL), type=palette)
   }, res = 100)
-  
+
   output$flowMosaic <- renderPlot({
     flow <- networkFlow()
     truth_positive_n <- flow$tp + flow$fn
@@ -128,23 +128,27 @@ server <- function(input, output) {
       scale_fill_discrete(guide = guide_legend(title=NULL), type=palette) +
       labs(x=NULL,y=NULL)
   })
-  
+
   output$statistics <- renderTable({
-    
+
     flow <- networkFlow()
     stats <- list(
-      Accuracy = (flow$tp+flow$tn)/(flow$tp+flow$tn+flow$fp+flow$fn)
+      Accuracy = (flow$tp+flow$tn)/(flow$tp+flow$tn+flow$fp+flow$fn),
+      PPV = flow$tp/(flow$tp + flow$fp),
+      NPV = flow$tn/(flow$tn + flow$fn)
     )
-    
+
+    stats <- lapply(stats, scales::percent, accuracy = 0.1)
+
     return(
       data.frame(
         Statistic = names(stats),
-        Value = stats
+        Value = unlist(stats)
       )
     )
-    
+
   })
-  
+
 }
 
 # Run the application
