@@ -1,5 +1,6 @@
 library(shiny)
 library(ggplot2)
+library(ggrepel)
 source("./evidence_strength_plot.R")
 source("./network_flow.R")
 
