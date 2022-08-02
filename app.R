@@ -114,9 +114,13 @@ server <- function(input, output) {
 
   output$click_info <- renderText({
     paste0("Sensitivity:",
-          scales::percent(input$evidence_click$x, accuracy = 1), "<br/>",
+          scales::percent(input$evidence_click$x, accuracy = 0.1), "<br/>",
           "Specificity:",
-          scales::percent(input$evidence_click$y, accuracy = 1))
+          scales::percent(input$evidence_click$y, accuracy = 0.1), "<br/>",
+          "+LR:",
+          round(input$evidence_click$x/(1 - input$evidence_click$y), 2), "<br/>",
+          "-LR:",
+          round((1 - input$evidence_click$x)/input$evidence_click$y, 2))
   })
 
   output$flowPlot <- renderPlot({
