@@ -146,12 +146,18 @@ server <- function(input, output) {
 
     flow <- networkFlow()
     stats <- list(
-      Accuracy = (flow$tp+flow$tn)/(flow$tp+flow$tn+flow$fp+flow$fn),
-      PPV = flow$tp/(flow$tp + flow$fp),
-      NPV = flow$tn/(flow$tn + flow$fn)
+      Accuracy = scales::percent(
+        (flow$tp+flow$tn)/(flow$tp+flow$tn+flow$fp+flow$fn), accuracy = 0.1
+      ),
+      PPV = scales::percent(
+        flow$tp/(flow$tp + flow$fp), accuracy = 0.1
+      ),
+      NPV = scales::percent(
+        flow$tn/(flow$tn + flow$fn), accuracy = 0.1
+      ),
+      `+LR` = round((input$sensitivity/100)/(1 - (input$specificity/100)), 2),
+      `-LR` = round((1 - (input$sensitivity/100))/(input$specificity/100), 2)
     )
-
-    stats <- lapply(stats, scales::percent, accuracy = 0.1)
 
     return(
       data.frame(
