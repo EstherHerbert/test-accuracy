@@ -197,7 +197,7 @@ server <- function(input, output) {
     point.data <- data.frame(do.call("cbind", point.data))
 
     ggplot(aes(Sensitivity, PPV), data = plot.data) +
-      geom_point(size = 2) +
+      geom_line() +
       geom_point(data = point.data, col = "red", size = 4) +
       scale_x_continuous(labels = scales::percent) +
       scale_y_continuous(labels = scales::percent) +
@@ -220,7 +220,7 @@ server <- function(input, output) {
     point.data <- data.frame(do.call("cbind", point.data))
 
     ggplot(aes(Specificity, PPV), data = plot.data) +
-      geom_point(size = 2) +
+      geom_line() +
       geom_point(data = point.data, col = "red", size = 4) +
       scale_x_continuous(labels = scales::percent) +
       scale_y_continuous(labels = scales::percent) +
@@ -243,7 +243,7 @@ server <- function(input, output) {
     point.data <- data.frame(do.call("cbind", point.data))
 
     ggplot(aes(pre_test_probability, PPV), data = plot.data) +
-      geom_point(size = 2) +
+      geom_line() +
       geom_point(data = point.data, col = "red", size = 4) +
       scale_x_continuous(labels = scales::percent) +
       scale_y_continuous(labels = scales::percent) +
@@ -267,7 +267,7 @@ server <- function(input, output) {
     point.data <- data.frame(do.call("cbind", point.data))
 
     ggplot(aes(Sensitivity, NPV), data = plot.data) +
-      geom_point(size = 2) +
+      geom_line() +
       geom_point(data = point.data, col = "red", size = 4) +
       scale_x_continuous(labels = scales::percent) +
       scale_y_continuous(labels = scales::percent) +
@@ -290,7 +290,7 @@ server <- function(input, output) {
     point.data <- data.frame(do.call("cbind", point.data))
 
     ggplot(aes(Specificity, NPV), data = plot.data) +
-      geom_point(size = 2) +
+      geom_line() +
       geom_point(data = point.data, col = "red", size = 4) +
       scale_x_continuous(labels = scales::percent) +
       scale_y_continuous(labels = scales::percent) +
@@ -313,7 +313,7 @@ server <- function(input, output) {
     point.data <- data.frame(do.call("cbind", point.data))
 
     ggplot(aes(pre_test_probability, NPV), data = plot.data) +
-      geom_point(size = 2) +
+      geom_line() +
       geom_point(data = point.data, col = "red", size = 4) +
       scale_x_continuous(labels = scales::percent) +
       scale_y_continuous(labels = scales::percent) +
